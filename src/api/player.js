@@ -6,9 +6,14 @@ export default function () {
   open.smartMusic = (options)=> this.player.open({partymode: 'music'}, options);
   open.smartVideo = (options)=> this.player.open({partymode: 'video'}, options);
   open.channel = (channelid, options)=> this.player.open({channelid}, options);
-  open.item = {
-
-  };
+  open.file = (path, options)=> this.player.open({file: path}, options);
+  open.movie = (movieid, options)=> this.player.open({movieid}, options);
+  open.episode = (episodeid, options)=> this.player.open({episodeid}, options);
+  open.musicVideo = (musicvideoid, options)=> this.player.open({musicvideoid}, options);
+  open.artist = (artistid, options)=> this.player.open({artistid}, options);
+  open.album = (albumid, options)=> this.player.open({albumid}, options);
+  open.song = (songid, options)=> this.player.open({songid}, options);
+  open.genre = (genreid, options)=> this.player.open({genreid}, options);
 
   const move = (playerid, direction)=> this.rpc.call('Player.Move', {playerid, direction});
   move.up = (playerid)=> this.player.move(playerid, 'up');
@@ -32,10 +37,6 @@ export default function () {
     move: move,
 
     open: open,
-
-    openItem: ()=> {
-      // TODO
-    },
 
     playPause: (playerid, play)=> this.rpc.call('Player.PlayPause', {playerid, play}),
 

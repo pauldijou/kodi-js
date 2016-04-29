@@ -6,7 +6,7 @@ export default function () {
 
     getProperties: (properties)=> this.rpc.call('System.GetProperties', {properties}),
 
-    can: types.system.property.filter(p=> p.indexOf('can') === 0).reduce((can, prop)=> {
+    can: types.system.property.name.filter(p=> p.indexOf('can') === 0).reduce((can, prop)=> {
       can[prop.slice(3)] = ()=> this.system.getProperties([prop]);
       return can;
     }, {}),

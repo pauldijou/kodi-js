@@ -18,6 +18,9 @@
   "bugs": {
     "url": "https://github.com/pauldijou/kodi-js/issues"
   },
+  "dependencies": {
+    "ws": "0.8.0"
+  },
   "devDependencies": {
     "webpack": "^1.11.0",
     "babel": "^5.8.21",
@@ -27,7 +30,7 @@
   },
   "scripts": {
     "clean": "rimraf lib",
-    "build": "babel src --out-dir lib",
+    "build": "rimraf lib && babel src --out-dir lib",
     "dist": "rimraf dist && webpack --config webpack.config.js --colors",
     "prepublish": "npm run clean && npm run build"
   }

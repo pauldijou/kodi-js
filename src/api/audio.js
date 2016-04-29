@@ -8,7 +8,7 @@ export default function () {
   return {
     clean: ()=> this.rpc.call('AudioLibrary.Clean', {}),
 
-    export: (options)=> this.rpc.call('AudioLibrary.Export', {options}),
+    'export': (options)=> this.rpc.call('AudioLibrary.Export', {options}),
 
     getAlbumDetails: (albumid, properties)=> this.rpc.call('AudioLibrary.GetAlbumDetails', {albumid , properties}),
 
@@ -22,7 +22,17 @@ export default function () {
 
     getRecentlyAddedAlbums: (properties, limits, sort)=> this.rpc.call('AudioLibrary.GetRecentlyAddedAlbums', {properties, limits, sort}),
 
-    getRecentlyAddedSongs: (albumlimit, properties, limits)=> this.rpc.call('AudioLibrary.GetRecentlyAddedSongs', {albumlimit, properties, limits}),
+    getRecentlyAddedSongs: (albumlimit, properties, limits, sort)=> {
+      if (typeof albumlimit === 'number') {
+        return this.rpc.call('AudioLibrary.GetRecentlyAddedSongs', {albumlimit, properties, limits, sort});
+      } else {
+        return this.rpc.call('AudioLibrary.GetRecentlyAddedSongs', {
+          properties: albumlimit,
+          limits: properties,
+          sort: limits
+        });
+      }
+    },
 
     getRecentlyPlayedAlbums: (properties, limits, sort)=> this.rpc.call('AudioLibrary.GetRecentlyPlayedAlbums', {properties, limits, sort}),
 
@@ -31,6 +41,18 @@ export default function () {
     getSongDetails: (songid, properties)=> this.rpc.call('AudioLibrary.GetSongDetails', {songid, properties}),
 
     getSongs: (properties, limits, sort, filter)=> this.rpc.call('AudioLibrary.GetSongs', {properties, limits, sort, filter}),
+
+    search: (query, properties, limits, sort)=> {
+      const filter = { or: [] };
+
+      query.split(' ').forEach(term => {
+        filter.or.push({ field: 'title', value: term, operator: 'contains' });
+        filter.or.push({ field: 'artist', value: term, operator: 'contains' });
+        filter.or.push({ field: 'album', value: term, operator: 'contains' });
+      });
+
+      return this.audio.getSongs(properties, limits, sort, filter);
+    },
 
     scan: (directory)=> this.rpc.call('AudioLibrary.Scan', {directory}),
 
@@ -41,7 +63,7 @@ export default function () {
     setSongDetails: (songid, {title, artist, albumartist, genre, year, rating, album, track, disc, duration, comment, musicbrainztrackid, musicbrainzartistid, musicbrainzalbumid, musicbrainzalbumartistid})=> this.rpc.call('AudioLibrary.SetSongDetails', {songid, title, artist, albumartist, genre, year, rating, album, track, disc, duration, comment, musicbrainztrackid, musicbrainzartistid, musicbrainzalbumid, musicbrainzalbumartistid}),
 
     // this.audio.set.song.title(1, 'New Title')
-    set: Object.keys(setFields).reduce((types, type)=> {
+    'set': Object.keys(setFields).reduce((types, type)=> {
       types[type.toLowerCase()] = setFields[type].reduce((fields, field)=> {
         fields[field] = (songid, value)=> this.audio['set' + type + 'Details'](songid, { [field]: value });
         return fields;

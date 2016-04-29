@@ -1,5 +1,7 @@
 export default function () {
   return {
-    toto: ()=> this.rpc.call('METHOD', {})
+    getInfoBooleans: (booleans)=> this.rpc.call('XBMC.GetInfoBooleans', {booleans}),
+    
+    getInfoLabels: (labels)=> this.rpc.call('XBMC.GetInfoLabels', {labels})
   };
 }
